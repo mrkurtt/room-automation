@@ -1,16 +1,20 @@
 // ignore_for_file: avoid_unnecessary_containers
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:micro_room_automation/firebase_options.dart';
 import 'package:micro_room_automation/screens/edit_curtain.dart';
 import 'package:micro_room_automation/screens/edit_fan.dart';
 import 'package:micro_room_automation/screens/light/edit_balcony.dart';
 import 'package:micro_room_automation/screens/light/edit_bed.dart';
 import 'package:micro_room_automation/screens/light/edit_main.dart';
-import 'package:micro_room_automation/widgets/control_panel.dart';
-import 'package:micro_room_automation/widgets/light_schedule.dart';
-import 'package:micro_room_automation/widgets/preferences.dart';
-import 'package:micro_room_automation/widgets/sensor_readings.dart';
+import 'package:micro_room_automation/components/light_schedule.dart';
+import 'package:micro_room_automation/components/preferences.dart';
+import 'package:micro_room_automation/components/sensor_readings.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -20,13 +24,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: FToastBuilder(),
       title: 'Personel Room Automation',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Nunito',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const PersonalRoomAutomation(title: 'Personal Room Automation'),
       routes: {
         '/edit/fan': (context) => const EditFan(),
         '/edit/curtain': (context) => const EditCurtain(),
@@ -34,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/edit/bed': (context) => const EditBedLight(),
         '/edit/balcony': (context) => const EditBalconyLight(),
       },
+      home: const PersonalRoomAutomation(title: 'Personal Room Automation'),
     );
   }
 }
