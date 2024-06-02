@@ -27,7 +27,7 @@ class _LightScheduleState extends State<LightSchedule> {
                     'Light Schedule',
                     style: TextStyle(
                         color: Color.fromARGB(133, 240, 1, 1),
-                        fontSize: 15.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.w700),
                   ),
                 ],
