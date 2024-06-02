@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "704168756858",
+    "firebase_url": "https://room-automation-1a1bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "room-automation-1a1bd",
+    "storage_bucket": "room-automation-1a1bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704168756858:android:743059eeba496397611dc3",
+        "android_client_info": {
+          "package_name": "com.example.micro_room_automation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBAAsk48P-LNLwBfjMXPJ67F-32aMX2m0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
