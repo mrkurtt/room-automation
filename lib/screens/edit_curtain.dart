@@ -1,4 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:micro_room_automation/utils/format_time.dart';
 import 'package:micro_room_automation/widgets/time_picker.dart';
 
 class EditCurtain extends StatefulWidget {
@@ -9,6 +12,49 @@ class EditCurtain extends StatefulWidget {
 }
 
 class _EditCurtainState extends State<EditCurtain> {
+  DatabaseReference curtainRef =
+      FirebaseDatabase.instance.ref('preferences/curtain');
+
+  String? openTime;
+  String? closeTime;
+  Map<String, Object?> updates = {};
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  void init() {
+    curtainRef.onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map;
+      if (mounted) {
+        setState(() {
+          openTime = formatTime(data["open"].toString());
+          closeTime = formatTime(data["close"].toString());
+        });
+      }
+
+      updates["open"] = data["open"];
+      updates["close"] = data["close"];
+    });
+  }
+
+  void saveUpdate() async {
+    if (updates.isNotEmpty) {
+      await curtainRef.update(updates).then((value) {
+        Fluttertoast.showToast(
+            msg: 'Preference saved.',
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        updates.clear();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,20 +88,20 @@ class _EditCurtainState extends State<EditCurtain> {
                   Text('Time to Close'),
                 ],
               ),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '6:00am',
-                    style: TextStyle(
-                        fontSize: 18.0,
+                    openTime.toString(),
+                    style: const TextStyle(
+                        fontSize: 25.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87),
                   ),
                   Text(
-                    '10:30pm',
-                    style: TextStyle(
-                        fontSize: 18.0,
+                    closeTime.toString(),
+                    style: const TextStyle(
+                        fontSize: 25.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87),
                   ),
@@ -86,7 +132,10 @@ class _EditCurtainState extends State<EditCurtain> {
                     label: 'Select Open Time',
                     initialTime: TimeOfDay.now().replacing(hour: 0, minute: 0),
                     onTimeSelected: (time) {
-                      print('Selected time: $time');
+                      updates["open"] =
+                          "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
+
+                      print(updates);
                     },
                   ),
                 ],
@@ -105,7 +154,9 @@ class _EditCurtainState extends State<EditCurtain> {
                     label: 'Select Close Time',
                     initialTime: TimeOfDay.now().replacing(hour: 0, minute: 0),
                     onTimeSelected: (time) {
-                      print('Selected time: $time');
+                      updates["close"] =
+                          "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
+                      print(updates);
                     },
                   ),
                 ],
@@ -114,18 +165,16 @@ class _EditCurtainState extends State<EditCurtain> {
                 height: 20.0,
               ),
               TextButton(
-                onPressed: () {
-                  print('You pressed the button!');
-                },
-                child: const Text(
-                  'Save Changes',
-                  style: TextStyle(color: Colors.white),
-                ),
+                onPressed: saveUpdate,
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.green, // Button background color
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0,
                       horizontal: 16.0), // Add padding around text
+                ),
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
