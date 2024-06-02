@@ -1,4 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:micro_room_automation/utils/format_time.dart';
 import 'package:micro_room_automation/widgets/time_picker.dart';
 
 class EditBalconyLight extends StatefulWidget {
@@ -9,6 +12,50 @@ class EditBalconyLight extends StatefulWidget {
 }
 
 class _EditBalconyLightState extends State<EditBalconyLight> {
+  DatabaseReference balconyLightRef =
+      FirebaseDatabase.instance.ref('preferences/light/balcony');
+
+  String? timeON;
+  String? timeOFF;
+  Map<String, Object?> updates = {};
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  void init() {
+    balconyLightRef.onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value as Map;
+
+      if (mounted) {
+        setState(() {
+          timeON = formatTime(data["on"].toString());
+          timeOFF = formatTime(data["off"].toString());
+        });
+      }
+
+      updates["on"] = data["on"];
+      updates["off"] = data["off"];
+    });
+  }
+
+  void saveUpdate() async {
+    if (updates.isNotEmpty) {
+      await balconyLightRef.update(updates).then((value) {
+        Fluttertoast.showToast(
+            msg: 'Preference saved.',
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        updates.clear();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,20 +89,20 @@ class _EditBalconyLightState extends State<EditBalconyLight> {
                 Text('Time OFF'),
               ],
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '6:00am',
-                  style: TextStyle(
-                      fontSize: 18.0,
+                  timeON.toString(),
+                  style: const TextStyle(
+                      fontSize: 25.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87),
                 ),
                 Text(
-                  '10:30pm',
-                  style: TextStyle(
-                      fontSize: 18.0,
+                  timeOFF.toString(),
+                  style: const TextStyle(
+                      fontSize: 25.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87),
                 ),
@@ -86,7 +133,9 @@ class _EditBalconyLightState extends State<EditBalconyLight> {
                   label: 'Select Time ON',
                   initialTime: TimeOfDay.now().replacing(hour: 0, minute: 0),
                   onTimeSelected: (time) {
-                    print('Selected time: $time');
+                    updates["on"] =
+                        "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
+                    print(updates);
                   },
                 ),
               ],
@@ -105,7 +154,9 @@ class _EditBalconyLightState extends State<EditBalconyLight> {
                   label: 'Select Time OFF',
                   initialTime: TimeOfDay.now().replacing(hour: 0, minute: 0),
                   onTimeSelected: (time) {
-                    print('Selected time: $time');
+                    updates["off"] =
+                        "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
+                    print(updates);
                   },
                 ),
               ],
@@ -114,17 +165,15 @@ class _EditBalconyLightState extends State<EditBalconyLight> {
               height: 20.0,
             ),
             TextButton(
-              onPressed: () {
-                print('You pressed the button!');
-              },
-              child: const Text(
-                'Save Changes',
-                style: TextStyle(color: Colors.white),
-              ),
+              onPressed: saveUpdate,
               style: TextButton.styleFrom(
                 backgroundColor: Colors.green, // Button background color
                 padding: const EdgeInsets.symmetric(
                     vertical: 8.0, horizontal: 16.0), // Add padding around text
+              ),
+              child: const Text(
+                'Save Changes',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],

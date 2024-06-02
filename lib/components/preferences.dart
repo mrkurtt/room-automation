@@ -12,6 +12,7 @@ class Preferences extends StatefulWidget {
 class _PreferencesState extends State<Preferences> {
   DatabaseReference pref = FirebaseDatabase.instance.ref("preferences");
   Map prefVals = {};
+
   @override
   void initState() {
     init();
@@ -102,9 +103,6 @@ class _PreferencesState extends State<Preferences> {
                               color: Color.fromARGB(255, 75, 75, 75),
                               fontWeight: FontWeight.w700,
                               fontSize: 16.0)),
-                      // const SizedBox(
-                      //   width: 25.0,
-                      // ),
                       IconButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/edit/fan');

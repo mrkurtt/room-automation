@@ -1,4 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:micro_room_automation/utils/format_time.dart';
 
 class LightSchedule extends StatefulWidget {
   const LightSchedule({super.key});
@@ -8,6 +10,31 @@ class LightSchedule extends StatefulWidget {
 }
 
 class _LightScheduleState extends State<LightSchedule> {
+  DatabaseReference lightRef =
+      FirebaseDatabase.instance.ref('preferences/light');
+
+  Map prefVals = {};
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  void init() async {
+    lightRef.onValue.listen((DatabaseEvent event) {
+      final data = event.snapshot.value;
+
+      if (mounted) {
+        setState(() {
+          prefVals = data as Map;
+        });
+      }
+
+      print(data);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -53,9 +80,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["main"]["on"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
@@ -72,9 +101,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["main"]["off"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
@@ -104,9 +135,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["bed"]["on"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
@@ -123,9 +156,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["bed"]["off"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
@@ -155,9 +190,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["balcony"]["on"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
@@ -174,9 +211,11 @@ class _LightScheduleState extends State<LightSchedule> {
                       const SizedBox(
                         width: 10.0,
                       ),
-                      const Text(
-                        '5:30pm',
-                        style: TextStyle(
+                      Text(
+                        prefVals.isNotEmpty
+                            ? formatTime(prefVals["balcony"]["off"].toString())
+                            : " ",
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 75, 75, 75),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0),
