@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:micro_room_automation/services/preferences.services.dart';
 
 class EditFan extends StatefulWidget {
   const EditFan({super.key});
@@ -11,12 +12,13 @@ class EditFan extends StatefulWidget {
 
 class _EditFanState extends State<EditFan> {
   DatabaseReference tempRef = FirebaseDatabase.instance.ref("preferences/temp");
+  PrefServices ps = PrefServices();
 
   final TextEditingController newMinTemp = TextEditingController();
   final TextEditingController newMaxTemp = TextEditingController();
 
-  int? minTemp;
-  int? maxTemp;
+  int minTemp = 0;
+  int maxTemp = 0;
 
   @override
   void initState() {
@@ -39,12 +41,12 @@ class _EditFanState extends State<EditFan> {
 
   void saveUpdate() async {
     if (newMinTemp.text != '' || newMaxTemp.text != '') {
-      await tempRef.update({
+      var updated = await ps.updateTempPref(tempRef, {
         "min": int.tryParse(newMinTemp.text) ?? minTemp,
         "max": int.tryParse(newMaxTemp.text) ?? maxTemp,
-      }).then((value) {
-        newMaxTemp.clear();
-        newMinTemp.clear();
+      });
+
+      if (updated) {
         Fluttertoast.showToast(
             msg: 'Preference saved.',
             gravity: ToastGravity.BOTTOM,
@@ -52,7 +54,17 @@ class _EditFanState extends State<EditFan> {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-      });
+        newMaxTemp.clear();
+        newMinTemp.clear();
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Failed to save preference.',
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:micro_room_automation/services/preferences.services.dart';
 import 'package:micro_room_automation/utils/format_time.dart';
 import 'package:micro_room_automation/widgets/time_picker.dart';
 
@@ -14,10 +15,11 @@ class EditBedLight extends StatefulWidget {
 class _EditBedLightState extends State<EditBedLight> {
   DatabaseReference bedLightRef =
       FirebaseDatabase.instance.ref('preferences/light/bed');
+  PrefServices ps = PrefServices();
 
   String? timeON;
   String? timeOFF;
-  Map<String, Object?> updates = {};
+  Map<String, String> updates = {};
 
   @override
   void initState() {
@@ -43,16 +45,27 @@ class _EditBedLightState extends State<EditBedLight> {
 
   void saveUpdate() async {
     if (updates.isNotEmpty) {
-      await bedLightRef.update(updates).then((value) {
+      var updated = await ps.updateLightSchedule(bedLightRef, updates);
+
+      if (updated) {
         Fluttertoast.showToast(
-            msg: 'Preference saved.',
+            msg: 'Preference saved',
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
         updates.clear();
-      });
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Failed to save preference',
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        updates.clear();
+      }
     }
   }
 
@@ -135,7 +148,6 @@ class _EditBedLightState extends State<EditBedLight> {
                   onTimeSelected: (time) {
                     updates["on"] =
                         "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
-                    print(updates);
                   },
                 ),
               ],
@@ -156,7 +168,6 @@ class _EditBedLightState extends State<EditBedLight> {
                   onTimeSelected: (time) {
                     updates["off"] =
                         "${time?.hour}:${time!.minute < 10 ? '0${time.minute}' : time.minute}";
-                    print(updates);
                   },
                 ),
               ],

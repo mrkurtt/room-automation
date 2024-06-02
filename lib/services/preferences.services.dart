@@ -1,20 +1,29 @@
 import 'package:firebase_database/firebase_database.dart';
 
 class PrefServices {
-  DatabaseReference tempRef = FirebaseDatabase.instance.ref("preferences/temp");
+  Future<bool> updateTempPref(
+      DatabaseReference ref, Map<String, int> updates) async {
+    bool success = false;
 
-  tempInit(int min, int max) {
-    tempRef.onValue.listen((DatabaseEvent event) {
-      final data = event.snapshot.value as Map;
-      min = int.parse(data["min"].toString());
-      max = int.parse(data["max"].toString());
+    await ref.update(updates).then((value) {
+      success = true;
+    }).catchError((err) {
+      success = false;
     });
+
+    return success;
   }
 
-  updateTempPref(String newMin, String newMax) async {
-    await tempRef.update({
-      "min": int.tryParse(newMin),
-      "max": int.tryParse(newMax),
+  Future<bool> updateLightSchedule(
+      DatabaseReference ref, Map<String, String> updates) async {
+    bool success = false;
+
+    await ref.update(updates).then((value) {
+      success = true;
+    }).catchError((err) {
+      success = false;
     });
+
+    return success;
   }
 }
