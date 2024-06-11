@@ -9,15 +9,29 @@ import 'package:micro_room_automation/screens/light/edit_balcony.dart';
 import 'package:micro_room_automation/screens/light/edit_bed.dart';
 import 'package:micro_room_automation/screens/light/edit_main.dart';
 import 'package:flutter/material.dart';
+import 'package:micro_room_automation/screens/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<int> checkLoggedIn() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  int? loggedIn = prefs.getInt('loggedIn') ?? 0;
+  return loggedIn;
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  int loggedIn = await checkLoggedIn();
+  print(loggedIn);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(MyApp(
+    isLoggedIn: loggedIn,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final int isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -31,33 +45,16 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
+        '/login': (context) => const Login(),
+        '/home': (context) => const HomeScreen(),
         '/edit/fan': (context) => const EditFan(),
         '/edit/curtain': (context) => const EditCurtain(),
         '/edit/main': (context) => const EditMainLight(),
         '/edit/bed': (context) => const EditBedLight(),
         '/edit/balcony': (context) => const EditBalconyLight(),
       },
-      home: const PersonalRoomAutomation(title: 'Personal Room Automation'),
-    );
-  }
-}
-
-class PersonalRoomAutomation extends StatefulWidget {
-  const PersonalRoomAutomation({super.key, required this.title});
-  final String title;
-
-  @override
-  State<PersonalRoomAutomation> createState() => _PersonalRoomAutomationState();
-}
-
-class _PersonalRoomAutomationState extends State<PersonalRoomAutomation> {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 245, 245, 245),
-        body: SingleChildScrollView(child: HomeScreen()),
-      ),
+      initialRoute: isLoggedIn.toInt() == 1 ? '/home' : '/login',
+      // home: const PersonalRoomAutomation(title: 'Personal Room Automation'),
     );
   }
 }
