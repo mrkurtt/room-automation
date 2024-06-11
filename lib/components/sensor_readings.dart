@@ -16,7 +16,7 @@ class _SensorReadingsState extends State<SensorReadings> {
 
   double? tempValue = 0.0;
   double? humValue = 0.0;
-  double? lightValue = 0.0;
+  String? lightValue = "";
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _SensorReadingsState extends State<SensorReadings> {
     lightRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
       setState(() {
-        lightValue = double.parse(data.toString());
+        lightValue = data.toString();
       });
     });
   }

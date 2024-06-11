@@ -51,7 +51,7 @@ class _EditFanState extends State<EditFan> {
             msg: 'Preference saved.',
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
+            backgroundColor: const Color.fromARGB(255, 77, 77, 77),
             textColor: Colors.white,
             fontSize: 16.0);
         newMaxTemp.clear();
@@ -61,7 +61,7 @@ class _EditFanState extends State<EditFan> {
             msg: 'Failed to save preference.',
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
+            backgroundColor: const Color.fromARGB(255, 77, 77, 77),
             textColor: Colors.white,
             fontSize: 16.0);
       }
