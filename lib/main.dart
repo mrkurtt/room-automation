@@ -22,8 +22,8 @@ Future<int> checkLoggedIn() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   int loggedIn = await checkLoggedIn();
-  print(loggedIn);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(MyApp(
     isLoggedIn: loggedIn,
   ));

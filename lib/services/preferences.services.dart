@@ -26,4 +26,17 @@ class PrefServices {
 
     return success;
   }
+
+  Future<bool> updateLightState(
+      DatabaseReference ref, Map<String, bool> updates) async {
+    bool success = false;
+
+    await ref.update(updates).then((value) {
+      success = true;
+    }).catchError((err) {
+      success = false;
+    });
+
+    return success;
+  }
 }

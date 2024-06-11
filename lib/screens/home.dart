@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:micro_room_automation/components/light_schedule.dart';
+import 'package:micro_room_automation/components/control_panel.dart';
 import 'package:micro_room_automation/components/preferences.dart';
 import 'package:micro_room_automation/components/sensor_readings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 253, 253, 253),
+        backgroundColor: Color.fromARGB(255, 249, 249, 249),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -68,11 +68,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 10.0,
                 ),
-                const LightSchedule(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Lights Control',
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent),
+                      ),
+                    ],
+                  ),
+                ),
+                const ControlPanel(),
                 const SizedBox(
                   height: 10.0,
                 ),
-                // const ControlPanel()
                 Row(
                   children: [
                     Expanded(
