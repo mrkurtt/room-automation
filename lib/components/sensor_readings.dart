@@ -27,23 +27,26 @@ class _SensorReadingsState extends State<SensorReadings> {
   void init() async {
     tempRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
-      setState(() {
+
+      if (mounted) {
         tempValue = double.parse(data.toString());
-      });
+      }
     });
 
     humRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
-      setState(() {
+
+      if (mounted) {
         humValue = double.parse(data.toString());
-      });
+      }
     });
 
     lightRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
-      setState(() {
+
+      if (mounted) {
         lightValue = data.toString();
-      });
+      }
     });
   }
 

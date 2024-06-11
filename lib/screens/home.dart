@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
-                            color: Colors.redAccent),
+                            color: Color.fromARGB(133, 240, 1, 1)),
                       ),
                     ],
                   ),
