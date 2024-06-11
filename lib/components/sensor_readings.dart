@@ -29,7 +29,9 @@ class _SensorReadingsState extends State<SensorReadings> {
       final data = event.snapshot.value;
 
       if (mounted) {
-        tempValue = double.parse(data.toString());
+        setState(() {
+          tempValue = double.parse(data.toString());
+        });
       }
     });
 
@@ -37,7 +39,9 @@ class _SensorReadingsState extends State<SensorReadings> {
       final data = event.snapshot.value;
 
       if (mounted) {
-        humValue = double.parse(data.toString());
+        setState(() {
+          humValue = double.parse(data.toString());
+        });
       }
     });
 
@@ -45,7 +49,9 @@ class _SensorReadingsState extends State<SensorReadings> {
       final data = event.snapshot.value;
 
       if (mounted) {
-        lightValue = data.toString();
+        setState(() {
+          lightValue = data.toString();
+        });
       }
     });
   }
